@@ -1,0 +1,4 @@
+*.o
+apps/Android/ShaderDemo/bin
+apps/Android/ShaderDemo/obj
+apps/Android/ShaderDemo/gen
