@@ -9,6 +9,14 @@
 
 NE_NAMESPACE_BEGIN
 
+class ISurface {
+public:
+	virtual ~ISurface() = default;
+
+	virtual void AllocSurface(int width, int height);
+	virtual void ReleaseSurface(void);
+};
+
 class Surface{
 public:
 	 Surface();
