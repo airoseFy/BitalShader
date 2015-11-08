@@ -4,20 +4,32 @@
 /*--------------------------
  |	Includes
  +-------------------------*/
-#include <EGL/egl.h>
 #include "base.h"
+#include "NeRenderer.h"
 
 NE_NAMESPACE_BEGIN
 
-class ISurface {
+class NeSurface{
 public:
-	virtual ~ISurface() = default;
-
-	virtual void AllocSurface(int width, int height);
-	virtual void ReleaseSurface(void);
+             NeSurface();
+    virtual ~NeSurface() = default;
+    
+    void SetRenderer(NeRenderer *render) noexcept;
+    NeRenderer *GetRenderer(void) const noexcept;
+    
+public:
+    virtual inline void CreateSurface(int width, int height);
+    virtual inline void DestroySurface(void);
+    virtual inline void Render(void);
+    virtual inline void Present(void);
+    
+private:
+    NeRenderer *m_Renderer;
+    int m_Width;
+    int m_Height;
 };
 
-class Surface{
+/*class Surface{
 public:
 	 Surface();
 	~Surface();
@@ -40,7 +52,7 @@ private:
 	
 	int	m_Width;
 	int m_Height;
-};
+};*/
 
 NE_NAMESPACE_END
 #endif //_NE_SURFACE_H_
