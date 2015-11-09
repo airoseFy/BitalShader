@@ -5,24 +5,31 @@
  |	Includes
  +-------------------------*/
 #include "base.h"
-#include "NeRenderer.h"
 
 NE_NAMESPACE_BEGIN
 
+class NeRenderer;
 class NeSurface{
 public:
              NeSurface();
-    virtual ~NeSurface() = default;
+			 NeSurface(NeRenderer *renderer);
+    virtual ~NeSurface();
     
-    void SetRenderer(NeRenderer *render) noexcept;
+    void SetRenderer(NeRenderer *renderer) noexcept;
     NeRenderer *GetRenderer(void) const noexcept;
     
 public:
-    virtual inline void CreateSurface(int width, int height);
-    virtual inline void DestroySurface(void);
-    virtual inline void Render(void);
-    virtual inline void Present(void);
+    virtual void CreateSurface(int width, int height);
+    virtual void DestroySurface(void);
+    virtual void Render(void);
+    virtual void Present(void);
     
+protected:
+	inline void SetWidth(int width) noexcept { m_Width = width;  }
+	inline void SetHeight(int height) noexcept { m_Height = height; }
+	inline int GetWidth(void) const noexcept { return m_Width; }
+	inline int GetHeight(void) const noexcept { return m_Height; }
+
 private:
     NeRenderer *m_Renderer;
     int m_Width;

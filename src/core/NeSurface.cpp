@@ -1,19 +1,31 @@
 #include "log.h"
 #include "NeSurface.h"
+#include "NeRenderer.h"
 
 #define TAG "NeSurface"
 
 NE_NAMESPACE_BEGIN
 
-NeSurface::NeSurface():
-    m_Renderer(nullptr)
+NeSurface::NeSurface() :
+	m_Renderer(nullptr)
 {
-    
+
 }
 
-void NeSurface::SetRenderer(NeRenderer *render) noexcept
+NeSurface::NeSurface(NeRenderer *renderer):
+	m_Renderer(renderer)
 {
-    m_Renderer = render;
+
+}
+
+NeSurface::~NeSurface()
+{
+	if (m_Renderer != nullptr) delete m_Renderer;
+}
+
+void NeSurface::SetRenderer(NeRenderer *renderer) noexcept
+{
+    m_Renderer = renderer;
 }
 
 NeRenderer* NeSurface::GetRenderer() const noexcept
@@ -25,17 +37,17 @@ void NeSurface::CreateSurface(int width, int height)
 {
     m_Width  = width;
     m_Height = height;
-    m_Renderer->OnSurfaceCreated(width, height);
+	if(m_Renderer != nullptr) m_Renderer->OnSurfaceCreated(width, height);  
 }
 
 void NeSurface::DestroySurface()
 {
-    m_Renderer->OnSurfaceDestroy();
+	if(m_Renderer != nullptr) m_Renderer->OnSurfaceDestroyed();   
 }
 
 void NeSurface::Render()
 {
-    m_Renderer->OnRender(m_Width, m_Height);
+	if(m_Renderer != nullptr) m_Renderer->OnRender(m_Width, m_Height);   
 }
 
 void NeSurface::Present()
