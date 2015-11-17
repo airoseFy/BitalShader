@@ -5,7 +5,7 @@
 #include <exception>
 
 //	gl headers	
-#include <GLES3/gl3.h>
+#include "platform.h"
 
 //	local headers
 #include "base.h"

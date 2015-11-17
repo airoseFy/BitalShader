@@ -1,62 +1,67 @@
 #ifndef _GL_ERROR_H_
 #define _GL_ERROR_H_
 
+#ifdef __ANDROID__
 #include <EGL/egl.h>
-#include <GLES3/gl3.h>
+#endif
+#include "platform.h"
 #include "log.h"
 
+#ifdef __ANDROID__
 inline void printEGLError(EGLint e) noexcept
 {
-	switch (e) {
-	case EGL_SUCCESS:
-		error("EGL", "No ERROR.");
-		break;
-	case EGL_NOT_INITIALIZED:
-		error("EGL", "ERROR : EGL_NOT_INITIALIZED");
-		break;
-	case EGL_BAD_ACCESS:
-		error("EGL", "ERROR : EGL_BAD_ACCESS");
-		break;
-	case EGL_BAD_ALLOC:
-		error("EGL", "ERROR : EGL_BAD_ALLOC");
-		break;
-	case EGL_BAD_ATTRIBUTE:
-		error("EGL", "ERROR : EGL_BAD_ATTRIBUTE");
-		break;
-	case EGL_BAD_CONTEXT:
-		error("EGL", "ERROR : EGL_BAD_CONTEXT");
-		break;
-	case EGL_BAD_CONFIG:
-		error("EGL", "ERROR : EGL_BAD_CONFIG");
-		break;
-	case EGL_BAD_CURRENT_SURFACE:
-		error("EGL", "ERROR : EGL_BAD_CURRENT_SURFACE");
-		break;
-	case EGL_BAD_DISPLAY:
-		error("EGL", "ERROR : EGL_BAD_DISPLAY");
-		break;
-	case EGL_BAD_SURFACE:
-		error("EGL", "ERROR : EGL_BAD_SURFACE");
-		break;
-	case EGL_BAD_MATCH:
-		error("EGL", "ERROR : EGL_BAD_MATCH");
-		break;
-	case EGL_BAD_PARAMETER:
-		error("EGL", "ERROR : EGL_BAD_PARAMETER");
-		break;
-	case EGL_BAD_NATIVE_PIXMAP:
-		error("EGL", "ERROR : EGL_BAD_NATIVE_PIXMAP");
-		break;
-	case EGL_BAD_NATIVE_WINDOW:
-		error("EGL", "ERROR : EGL_BAD_NATIVE_WINDOW");
-		break;
-	case EGL_CONTEXT_LOST:
-		error("EGL", "ERROR : EGL_CONTEXT_LOST");
-		break;
-	default:
-		break;
-	}
+    switch (e) {
+        case EGL_SUCCESS:
+            error("EGL", "No ERROR.");
+            break;
+        case EGL_NOT_INITIALIZED:
+            error("EGL", "ERROR : EGL_NOT_INITIALIZED");
+            break;
+        case EGL_BAD_ACCESS:
+            error("EGL", "ERROR : EGL_BAD_ACCESS");
+            break;
+        case EGL_BAD_ALLOC:
+            error("EGL", "ERROR : EGL_BAD_ALLOC");
+            break;
+        case EGL_BAD_ATTRIBUTE:
+            error("EGL", "ERROR : EGL_BAD_ATTRIBUTE");
+            break;
+        case EGL_BAD_CONTEXT:
+            error("EGL", "ERROR : EGL_BAD_CONTEXT");
+            break;
+        case EGL_BAD_CONFIG:
+            error("EGL", "ERROR : EGL_BAD_CONFIG");
+            break;
+        case EGL_BAD_CURRENT_SURFACE:
+            error("EGL", "ERROR : EGL_BAD_CURRENT_SURFACE");
+            break;
+        case EGL_BAD_DISPLAY:
+            error("EGL", "ERROR : EGL_BAD_DISPLAY");
+            break;
+        case EGL_BAD_SURFACE:
+            error("EGL", "ERROR : EGL_BAD_SURFACE");
+            break;
+        case EGL_BAD_MATCH:
+            error("EGL", "ERROR : EGL_BAD_MATCH");
+            break;
+        case EGL_BAD_PARAMETER:
+            error("EGL", "ERROR : EGL_BAD_PARAMETER");
+            break;
+        case EGL_BAD_NATIVE_PIXMAP:
+            error("EGL", "ERROR : EGL_BAD_NATIVE_PIXMAP");
+            break;
+        case EGL_BAD_NATIVE_WINDOW:
+            error("EGL", "ERROR : EGL_BAD_NATIVE_WINDOW");
+            break;
+        case EGL_CONTEXT_LOST:
+            error("EGL", "ERROR : EGL_CONTEXT_LOST");
+            break;
+        default:
+            break;
+    }
 }
+#endif
+
 
 inline void printGLError(GLenum e) noexcept
 {

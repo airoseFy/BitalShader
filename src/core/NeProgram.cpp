@@ -16,19 +16,19 @@ NeProgram::~NeProgram()
 	if (m_ProgramId != 0) glDeleteProgram(m_ProgramId);
 }
 
-GLenum NeProgram::AttachShader(NeShader* shader)
+GLenum NeProgram::AttachShader(NeShader* shader) noexcept
 {
 	glAttachShader(m_ProgramId, shader->GetShaderId());
 	return glGetError();
 }
 
-GLenum NeProgram::DetachShader(NeShader* shader)
+GLenum NeProgram::DetachShader(NeShader* shader) noexcept
 {
 	glDetachShader(m_ProgramId, shader->GetShaderId());
 	return glGetError();
 }
 
-GLenum NeProgram::Link(void) const
+GLenum NeProgram::Link(void) const noexcept
 {
 	glLinkProgram(m_ProgramId);
 
@@ -53,7 +53,7 @@ GLenum NeProgram::Link(void) const
 	return error;
 }
 
-GLenum NeProgram::Use(void) const
+GLenum NeProgram::Use(void) const noexcept
 {
 	info("Program", "Use m_ProgramId = %d", m_ProgramId);
 	glUseProgram(m_ProgramId);

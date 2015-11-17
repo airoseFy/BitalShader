@@ -7,5 +7,6 @@
 
 -(id) initWithFrame:(CGRect)frame;
 
+-(void) dealloc;
 @end
 
