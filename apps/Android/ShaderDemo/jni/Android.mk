@@ -19,6 +19,7 @@ LOCAL_SRC_FILES  := \
 	$(NE_SRC_ROOT)/core/NeProgram.cpp \
 	$(NE_SRC_ROOT)/core/NeSurface.cpp \
 	$(AN_PLATFORM_ROOT)/AN_Surface.cpp \
+	MyRenderer.cpp \
 	ShaderDemo.cpp
 	
 LOCAL_LDLIBS     += -llog

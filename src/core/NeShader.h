@@ -14,29 +14,20 @@
 
 NE_NAMESPACE_BEGIN
 
-class Shader;
-class ShaderFactory;
-class ShaderException;
-class Fragment;
+class NeShader;
+class NeShaderFactory;
+class NeFragment;
 
-class ShaderException : public std::exception {
-public:
-	explicit ShaderException(const char* msg) { _what = msg; }
-	~ShaderException() = default;
-
-	virtual const char* what() const noexcept
-	{
-		return _what;
-	}
-private:
-	const char* _what;
+enum class NeShaderType {
+	SHADER_TYPE_VERTEX   = 0x01,
+	SHADER_TYPE_FRAGMENT = 0x02
 };
 
-class Shader {
+class NeShader {
 public:
-	 explicit Shader(GLenum type);
-	 Shader(GLenum type, const char* const source);
-	~Shader();
+	 explicit NeShader(NeShaderType type);
+	 NeShader(NeShaderType type, const char* const source);
+	~NeShader();
 
 public:
 	inline GLenum /* error_no */ LoadSource(const char* const source) noexcept
@@ -60,42 +51,20 @@ public:
 		return GL_NO_ERROR;
 	}
 
-	inline GLenum /* error_no */ Compile(void) throw (ShaderException)
-	{
-		glCompileShader(m_ShaderId);
+	GLenum /* error_no */ Compile(void) noexcept;
 
-		GLenum error = glGetError();
-		if (error != GL_NO_ERROR)
-		{
-			printGLError(error);
-			GLint len;
-			glGetShaderiv(m_ShaderId, GL_INFO_LOG_LENGTH, &len);
-			if (len > 0)
-			{
-				char log_info[len];
-				glGetShaderInfoLog(m_ShaderId, len, &len, log_info);
-				info("Shader", "Compile Error : %s", log_info);
-			}
-		}
-		else {
-			m_Compiled = true;
-		}
-
-		return error;
-	}
-
-	inline GLenum /* error_no */ Attach(Fragment& fragment) const noexcept
+	inline GLenum /* error_no */ Attach(NeFragment& fragment) const noexcept
 	{
 		return GL_NO_ERROR;
 	}
 
-	inline GLenum /* error_no */ Detach(Fragment& fragment) const noexcept
+	inline GLenum /* error_no */ Detach(NeFragment& fragment) const noexcept
 	{
 		return GL_NO_ERROR;
 	}
 
 public:
-	inline GLenum GetShaderType(void) const noexcept
+	inline NeShaderType GetShaderType(void) const noexcept
 	{
 		return m_ShaderType;
 	}
@@ -106,23 +75,23 @@ public:
 	}
 
 protected:
-	friend class Program;  //declare friend class Program
+	friend class NeProgram;  //declare friend class Program
 
 private:
-	GLenum	m_ShaderType;
+	NeShaderType m_ShaderType;
 	GLuint	m_ShaderId;
 	bool	m_Compiled;
 	char const* m_Source;
 };
 
-class ShaderFactory {
+class NeShaderFactory {
 public:
-	static Shader* CreateShader(GLenum type);
-	static Shader* CreateShader(GLenum type, const char* const source);
-	static Shader* CreateVertexShader();
-	static Shader* CreateVertexShader(const char* const source);
-	static Shader* CreateFragmentShader();
-	static Shader* CreateFragmentShader(const char* const source);
+	static NeShader* CreateShader(NeShaderType type);
+	static NeShader* CreateShader(NeShaderType type, const char* const source);
+	static NeShader* CreateVertexShader();
+	static NeShader* CreateVertexShader(const char* const source);
+	static NeShader* CreateFragmentShader();
+	static NeShader* CreateFragmentShader(const char* const source);
 };
 
 NE_NAMESPACE_END

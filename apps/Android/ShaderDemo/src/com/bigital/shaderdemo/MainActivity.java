@@ -4,11 +4,16 @@ import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
 import android.app.Activity;
+import android.app.ActivityManager;
+import android.app.ActivityManager.RunningAppProcessInfo;
+import android.content.Context;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
 import android.view.Surface;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import android.view.View;
+import android.widget.Button;
 
 
 public class MainActivity extends Activity {
@@ -20,15 +25,17 @@ public class MainActivity extends Activity {
 	
 	private GLSurfaceView surfaceView = null;
 	
+	private Button button = null;
+	
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 //        setContentView(R.layout.activity_main);
         surfaceView = new GLSurfaceView(this);
-//        surfaceView.getHolder().addCallback(callback);
-//        surfaceView.setZOrderOnTop(true);
+        surfaceView.setEGLConfigChooser(8, 8, 8, 0, 24, 0);
+        surfaceView.setEGLContextClientVersion(2);
         surfaceView.setRenderer(renderer);
-        setContentView(surfaceView);      
+        setContentView(surfaceView);    
     }
     
     private GLSurfaceView.Renderer renderer = new GLSurfaceView.Renderer() {
@@ -36,50 +43,40 @@ public class MainActivity extends Activity {
 		@Override
 		public void onSurfaceCreated(GL10 arg0, EGLConfig arg1) {
 			// TODO Auto-generated method stub
-//			onSurfaceCreated(surfaceView.getHolder().getSurface());
+			OnSurfaceCreated(surfaceView.getHolder().getSurface());
 		}
 		
 		@Override
 		public void onSurfaceChanged(GL10 arg0, int arg1, int arg2) {
 			// TODO Auto-generated method stub
-			
+			OnSurfaceChanged(arg1, arg2);
 		}
 		
 		@Override
 		public void onDrawFrame(GL10 arg0) {
 			// TODO Auto-generated method stub
-			
+			OnDrawFrame(surfaceView.getHolder().getSurface());
 		}
 	}; 
 	
-    private SurfaceHolder.Callback callback = new SurfaceHolder.Callback() {
-		
-		@Override
-		public void surfaceDestroyed(SurfaceHolder holder) {
-			// TODO Auto-generated method stub
-			//Log.d(TAG, "surfaceDestroyed");
-			onSurfaceDestroy(holder.getSurface());
-		}
-		
-		@Override
-		public void surfaceCreated(SurfaceHolder holder) {
-			// TODO Auto-generated method stub
-			//Log.d(TAG, "surfaceCreated");
-			onSurfaceCreated(holder.getSurface());
-		}
-		
-		@Override
-		public void surfaceChanged(SurfaceHolder holder, int format, int width,
-				int height) {
-			// TODO Auto-generated method stub
-			//Log.d(TAG, "surfaceChanged width = "+width+" height = "+height);
-			onSurfaceChanged(holder.getSurface());
-		}
+	@Override
+	protected void onDestroy() {
+		kill();
+		super.onDestroy();
 	};
 	
-	private static native void onSurfaceCreated(Surface surface);
+	private void kill(){
+		ActivityManager am = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+		String mtaPackageName = getPackageName();
+		for(RunningAppProcessInfo info:am.getRunningAppProcesses()){
+			if(mtaPackageName.equalsIgnoreCase(info.processName)){
+				android.os.Process.killProcess(info.pid);
+			}
+		}
+	}
+	private static native void OnSurfaceCreated(Surface surface);
 	
-	private static native void onSurfaceChanged(Surface surface);
+	private static native void OnSurfaceChanged(int width, int height);
 	
-	private static native void onSurfaceDestroy(Surface surface);
+	private static native void OnDrawFrame(Surface surface);
 }

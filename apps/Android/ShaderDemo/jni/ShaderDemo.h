@@ -9,27 +9,27 @@ extern "C" {
 #endif
 /*
  * Class:     com_bigital_shaderdemo_MainActivity
- * Method:    onSurfaceCreated
+ * Method:    OnSurfaceCreated
  * Signature: (Landroid/view/Surface;)V
  */
-JNIEXPORT void JNICALL Java_com_bigital_shaderdemo_MainActivity_onSurfaceCreated
-  (JNIEnv *, jobject, jobject);
+JNIEXPORT void JNICALL Java_com_bigital_shaderdemo_MainActivity_OnSurfaceCreated
+  (JNIEnv *, jclass, jobject);
 
 /*
  * Class:     com_bigital_shaderdemo_MainActivity
- * Method:    onSurfaceChanged
- * Signature: (Landroid/view/Surface;)V
+ * Method:    OnSurfaceChanged
+ * Signature: (II)V
  */
-JNIEXPORT void JNICALL Java_com_bigital_shaderdemo_MainActivity_onSurfaceChanged
-  (JNIEnv *, jobject, jobject);
+JNIEXPORT void JNICALL Java_com_bigital_shaderdemo_MainActivity_OnSurfaceChanged
+  (JNIEnv *, jclass, jint, jint);
 
 /*
  * Class:     com_bigital_shaderdemo_MainActivity
- * Method:    onSurfaceDestroy
+ * Method:    OnDrawFrame
  * Signature: (Landroid/view/Surface;)V
  */
-JNIEXPORT void JNICALL Java_com_bigital_shaderdemo_MainActivity_onSurfaceDestroy
-  (JNIEnv *, jobject, jobject);
+JNIEXPORT void JNICALL Java_com_bigital_shaderdemo_MainActivity_OnDrawFrame
+  (JNIEnv *, jclass, jobject);
 
 #ifdef __cplusplus
 }

@@ -12,16 +12,16 @@
 
 NE_NAMESPACE_BEGIN
 
-class Shader;
-class Program {
+class NeShader;
+class NeProgram {
 public:
-	 Program();
+	NeProgram();
 
-	~Program();
+	~NeProgram();
 
-	 GLenum /* error_no */ AttachShader(Shader* shader) noexcept;
+	 GLenum /* error_no */ AttachShader(NeShader* shader) noexcept;
 	
-	 GLenum /* error_no */ DetachShader(Shader* shader) noexcept;
+	 GLenum /* error_no */ DetachShader(NeShader* shader) noexcept;
 
 	 GLenum /* error_no */ Link(void) const noexcept;
 
