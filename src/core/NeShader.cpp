@@ -3,52 +3,87 @@
 
 NE_NAMESPACE_BEGIN
 
-Shader::Shader(GLenum type)
-	:m_ShaderType(type), m_ShaderId(glCreateShader(type)), m_Compiled(false), m_Source(nullptr)
+NeShader::NeShader(NeShaderType type)
 {
-
+	m_ShaderType = type;
+	m_Compiled = false;
+	m_Source = nullptr;
+	m_ShaderId = (type == NeShaderType::SHADER_TYPE_FRAGMENT) ? glCreateShader(GL_FRAGMENT_SHADER) : glCreateShader(GL_VERTEX_SHADER);
 }
 
-Shader::Shader(GLenum type, const char* const source)
-	:m_ShaderType(type), m_ShaderId(glCreateShader(type)), m_Compiled(false)
+NeShader::NeShader(NeShaderType type, const char* const source)
 {
+	m_ShaderType = type;
+	m_Compiled = false;
+	m_ShaderId = (type == NeShaderType::SHADER_TYPE_FRAGMENT) ? glCreateShader(GL_FRAGMENT_SHADER) : glCreateShader(GL_VERTEX_SHADER);
 	this->LoadSource(source);
 }
 
-Shader::~Shader()
+NeShader::~NeShader()
 {
 	if (m_ShaderId != 0) glDeleteShader(m_ShaderId);
 }
 
+GLenum NeShader::Compile(void) noexcept
+{
+	glCompileShader(m_ShaderId);
+
+	GLint compiled = 0;
+	glGetShaderiv(m_ShaderId, GL_COMPILE_STATUS, &compiled);
+
+	if (!compiled)
+	{
+		GLint len;
+		glGetShaderiv(m_ShaderId, GL_INFO_LOG_LENGTH, &len);
+		if (len > 0)
+		{
+			char log_info[len];
+			glGetShaderInfoLog(m_ShaderId, len, &len, log_info);
+			info("Shader", "Compile Error : %s", log_info);
+		}
+	}
+	else {
+		m_Compiled = true;
+	}
+
+	GLenum error = glGetError();
+	if (error != GL_NO_ERROR)
+	{
+		printGLError(error);
+	}
+
+	return error;
+}
+
 /*	ShaderFactory	*/
-Shader* ShaderFactory::CreateShader(GLenum type)
+NeShader* NeShaderFactory::CreateShader(NeShaderType type)
 {
-	return new Shader(type);
+	return new NeShader(type);
 }
 
-Shader* ShaderFactory::CreateShader(GLenum type, const char* const source)
+NeShader* NeShaderFactory::CreateShader(NeShaderType type, const char* const source)
 {
-	return new Shader(type, source);
+	return new NeShader(type, source);
 }
 
-Shader* ShaderFactory::CreateVertexShader()
+NeShader* NeShaderFactory::CreateVertexShader()
 {
-	return new Shader(GL_VERTEX_SHADER);
+	return new NeShader(NeShaderType::SHADER_TYPE_VERTEX);
 }
 
-Shader* ShaderFactory::CreateVertexShader(const char* const source)
+NeShader* NeShaderFactory::CreateVertexShader(const char* const source)
 {
-	return new Shader(GL_VERTEX_SHADER, source);
+	return new NeShader(NeShaderType::SHADER_TYPE_VERTEX, source);
 }
 
-Shader* ShaderFactory::CreateFragmentShader()
+NeShader* NeShaderFactory::CreateFragmentShader()
 {
-	return new Shader(GL_FRAGMENT_SHADER);
+	return new NeShader(NeShaderType::SHADER_TYPE_FRAGMENT);
 }
 
-Shader* ShaderFactory::CreateFragmentShader(const char* const source)
+NeShader* NeShaderFactory::CreateFragmentShader(const char* const source)
 {
-	return new Shader(GL_FRAGMENT_SHADER, source);
+	return new NeShader(NeShaderType::SHADER_TYPE_FRAGMENT, source);
 }
 
 NE_NAMESPACE_END

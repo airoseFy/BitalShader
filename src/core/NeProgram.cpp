@@ -5,50 +5,57 @@
 
 NE_NAMESPACE_BEGIN
 
-Program::Program()
+NeProgram::NeProgram()
 	:m_ProgramId(glCreateProgram())
 {
 
 }
 
-Program::~Program()
+NeProgram::~NeProgram()
 {
 	if (m_ProgramId != 0) glDeleteProgram(m_ProgramId);
 }
 
-GLenum Program::AttachShader(Shader* shader)
+GLenum NeProgram::AttachShader(NeShader* shader)
 {
 	glAttachShader(m_ProgramId, shader->GetShaderId());
 	return glGetError();
 }
 
-GLenum Program::DetachShader(Shader* shader)
+GLenum NeProgram::DetachShader(NeShader* shader)
 {
 	glDetachShader(m_ProgramId, shader->GetShaderId());
 	return glGetError();
 }
 
-GLenum Program::Link(void) const
+GLenum NeProgram::Link(void) const
 {
 	glLinkProgram(m_ProgramId);
 
-	GLenum error = glGetError();
-	if (error != GL_NO_ERROR)
+	GLint linked = 0;
+	glGetProgramiv(m_ProgramId, GL_LINK_STATUS, &linked);
+	if (!linked)
 	{
-		printGLError(error);
-
+		info("Program", "Link failed!");
 		GLint len = 0;
 		glGetProgramiv(m_ProgramId, GL_INFO_LOG_LENGTH, &len);
 		char info_log[len];
 		glGetProgramInfoLog(m_ProgramId, len, &len, info_log);
 		info("Program", "Link Error : %s", info_log);
 	}
+	
+	GLenum error = glGetError();
+	if (error != GL_NO_ERROR)
+	{
+		printGLError(error);
+	}
 
 	return error;
 }
 
-GLenum Program::Use(void) const
+GLenum NeProgram::Use(void) const
 {
+	info("Program", "Use m_ProgramId = %d", m_ProgramId);
 	glUseProgram(m_ProgramId);
 
 	GLenum error = glGetError();
@@ -60,7 +67,7 @@ GLenum Program::Use(void) const
 		glGetProgramiv(m_ProgramId, GL_INFO_LOG_LENGTH, &len);
 		char info_log[len];
 		glGetProgramInfoLog(m_ProgramId, len, &len, info_log);
-		info("Program", "Link Error : %s", info_log);
+		info("Program", "Use Error : %s", info_log);
 	}
 
 	return error;

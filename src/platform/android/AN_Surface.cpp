@@ -6,32 +6,32 @@
 AN_Surface::AN_Surface(EGLNativeWindowType win):
 	m_Display(EGL_NO_DISPLAY), m_Surface(EGL_NO_SURFACE)
 {
-	if (m_Display == EGL_NO_DISPLAY)
-	{
-		this->Initialize();
-	}
+	//if (m_Display == EGL_NO_DISPLAY)
+	//{
+	//	this->Initialize();
+	//}
 
-	m_Surface = eglCreateWindowSurface(m_Display, m_Config, win, NULL);
-	if (EGL_NO_SURFACE == m_Surface)
-	{
-		info(TAG, "eglCreateWindowSurface failed!");
-		return;
-	}
+	//m_Surface = eglCreateWindowSurface(m_Display, m_Config, win, NULL);
+	//if (EGL_NO_SURFACE == m_Surface)
+	//{
+	//	info(TAG, "eglCreateWindowSurface failed!");
+	//	return;
+	//}
 
-	int width, height;
-	if (EGL_TRUE == eglQuerySurface(m_Display, m_Surface, EGL_WIDTH, &width) &&
-		EGL_TRUE == eglQuerySurface(m_Display, m_Surface, EGL_HEIGHT, &height))
-	{
-		this->SetWidth(width);
-		this->SetHeight(height);
-		info(TAG, "Surface width = %d, height = %d", this->GetWidth(), this->GetHeight());
-		if (EGL_TRUE != eglMakeCurrent(m_Display, m_Surface, m_Surface, m_Context))
-		{
-			EGLint error = eglGetError();
-			//printEGLError(error);			
-			info(TAG, "eglMakeCurrent failed!");
-		}
-	}
+	//int width, height;
+	//if (EGL_TRUE == eglQuerySurface(m_Display, m_Surface, EGL_WIDTH, &width) &&
+	//	EGL_TRUE == eglQuerySurface(m_Display, m_Surface, EGL_HEIGHT, &height))
+	//{
+	//	this->SetWidth(width);
+	//	this->SetHeight(height);
+	//	info(TAG, "Surface width = %d, height = %d", this->GetWidth(), this->GetHeight());
+	//	if (EGL_TRUE != eglMakeCurrent(m_Display, m_Surface, m_Surface, m_Context))
+	//	{
+	//		EGLint error = eglGetError();
+	//		//printEGLError(error);			
+	//		info(TAG, "eglMakeCurrent failed!");
+	//	}
+	//}
 }
 
 bool AN_Surface::Initialize(void)
@@ -112,9 +112,9 @@ bool AN_Surface::Initialize(void)
 void AN_Surface::Render(void)
 {
 	NeSurface::Render();
-	if (EGL_TRUE != eglSwapBuffers(m_Display, m_Surface))
-	{
-		info(TAG, "eglSwapBuffers error!");
-		EGLint error = eglGetError();
-	}
+	//if (EGL_TRUE != eglSwapBuffers(m_Display, m_Surface))
+	//{
+	//	info(TAG, "eglSwapBuffers error!");
+	//	EGLint error = eglGetError();
+	//}
 }
