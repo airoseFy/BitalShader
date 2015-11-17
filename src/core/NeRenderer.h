@@ -13,7 +13,7 @@ class NeRenderer {
 public:
 	virtual ~NeRenderer() = default;
 
-protected:
+public:
 	virtual void OnSurfaceCreated(int width, int height) = 0;
 	virtual void OnSurfaceDestroyed(void) = 0;
 	virtual void OnRender(int width, int height) = 0;
