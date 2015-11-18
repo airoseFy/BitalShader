@@ -19,13 +19,16 @@ public:
 
 	~NeProgram();
 
-	 GLenum /* error_no */ AttachShader(NeShader* shader) noexcept;
+public:
+	GLenum /* error_no */ AttachShader(NeShader* shader) noexcept;
 	
-	 GLenum /* error_no */ DetachShader(NeShader* shader) noexcept;
+	GLenum /* error_no */ DetachShader(NeShader* shader) noexcept;
 
-	 GLenum /* error_no */ Link(void) const noexcept;
+	GLenum /* error_no */ Link(void) const noexcept;
 
-	 GLenum /* error_no */ Use(void) const noexcept;
+	GLenum /* error_no */ Use(void) const noexcept;
+
+	GLuint GetProgramId(void) const noexcept;
 
 private:
 	GLuint m_ProgramId;

@@ -12,6 +12,7 @@ LOCAL_C_INCLUDES := \
 	$(NE_SRC_ROOT) \
 	$(NE_SRC_ROOT)/common \
 	$(NE_SRC_ROOT)/core \
+	$(NE_SRC_ROOT)/platform \
 	$(AN_PLATFORM_ROOT)
 	
 LOCAL_SRC_FILES  := \

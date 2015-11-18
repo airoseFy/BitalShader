@@ -16,6 +16,11 @@ NeProgram::~NeProgram()
 	if (m_ProgramId != 0) glDeleteProgram(m_ProgramId);
 }
 
+GLuint NeProgram::GetProgramId(void) const noexcept
+{
+	return m_ProgramId;
+}
+
 GLenum NeProgram::AttachShader(NeShader* shader) noexcept
 {
 	glAttachShader(m_ProgramId, shader->GetShaderId());

@@ -4,13 +4,16 @@
 //	c/c++ std headers
 #include <exception>
 
-//	gl headers	
-#include "platform.h"
+//	std headers	
+#include <string>
 
 //	local headers
 #include "base.h"
 #include "log.h"
 #include "glError.h"
+#include "platform.h"
+
+using namespace std;
 
 NE_NAMESPACE_BEGIN
 
@@ -25,43 +28,17 @@ enum class NeShaderType {
 
 class NeShader {
 public:
-	 explicit NeShader(NeShaderType type);
-	 NeShader(NeShaderType type, const char* const source);
+	 explicit NeShader(NeShaderType type, bool compiled = false);
+	 NeShader(NeShaderType type, const char* const source, bool compiled = false);
+	 NeShader(NeShaderType type, const string& source, bool compiled = false);
 	~NeShader();
 
 public:
-	inline GLenum /* error_no */ LoadSource(const char* const source) noexcept
-	{
-		m_Source = source;
-		if (m_ShaderId != 0 && source != nullptr)
-		{
-			glShaderSource(m_ShaderId, 1, &m_Source, NULL);
-		}
-		
-		return GL_NO_ERROR;
-	}
+	GLenum /* error_no */ LoadSource(const char* const source) noexcept;
 
-	inline GLenum /* error_no */ LoadSource(GLsizei count, const char* const * src_array, const GLint *len_array)
-	{
-		if (m_ShaderId != 0)
-		{
-			glShaderSource(m_ShaderId, count, src_array, len_array);
-		}
-
-		return GL_NO_ERROR;
-	}
+	GLenum /* error_no */ LoadSource(GLsizei count, const char* const * src_array, const GLint *len_array);
 
 	GLenum /* error_no */ Compile(void) noexcept;
-
-	inline GLenum /* error_no */ Attach(NeFragment& fragment) const noexcept
-	{
-		return GL_NO_ERROR;
-	}
-
-	inline GLenum /* error_no */ Detach(NeFragment& fragment) const noexcept
-	{
-		return GL_NO_ERROR;
-	}
 
 public:
 	inline NeShaderType GetShaderType(void) const noexcept
@@ -75,6 +52,9 @@ public:
 	}
 
 protected:
+	virtual char const* OnShaderCreated() noexcept;
+	//virtual void OnAttached(void) noexcept;
+	//virtual void OnDettached(void) noexcept;
 	friend class NeProgram;  //declare friend class Program
 
 private:

@@ -30,20 +30,20 @@ void MyRenderer::OnSurfaceCreated(int width, int height)
 {
 	info("MyRenderer", "OnSurfaceCreated");
 	char vShaderScript[] =
-		"#version 300 es							\n"
-		"layout(location = 0) in vec4 vPosition;	\n"
+	//	"#version 300 es							\n"
+		"attribute vec4 vPosition;	\n"
 		"void main()								\n"
 		"{											\n"
 		"gl_Position = vPosition;					\n"
 		"}											\n";
 
 	char fShaderScript[] =
-		"#version 300 es						\n"
+	//	"#version 300 es						\n"
 		"precision mediump float;				\n"
-		"out vec4 fragColor;					\n"
+		//"out vec4 fragColor;					\n"
 		"void main()							\n"
 		"{										\n"
-		"fragColor = vec4 (1.0, 0.0, 0.0, 1.0); \n"
+		"gl_FragColor = vec4 (1.0, 0.0, 0.0, 1.0); \n"
 		"}										\n";
 
 	m_VertexShader->LoadSource(vShaderScript);
@@ -55,6 +55,7 @@ void MyRenderer::OnSurfaceCreated(int width, int height)
 	m_Program->AttachShader(m_FragmentShader);
 	m_Program->Link();
 
+	glBindAttribLocation(m_Program->GetProgramId(), 0, "vPoistion");
 	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 }
 
