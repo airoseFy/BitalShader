@@ -3,23 +3,60 @@
 
 NE_NAMESPACE_BEGIN
 
+static GLuint CreateShader(NeShaderType type)
+{
+	GLuint shaderHandle = 0;
+
+	switch (type) {
+	case NeShaderType::SHADER_TYPE_VERTEX:
+		shaderHandle = glCreateShader(GL_VERTEX_SHADER);
+		break;
+	case NeShaderType::SHADER_TYPE_FRAGMENT:
+		shaderHandle = glCreateShader(GL_FRAGMENT_SHADER);
+		break;
+	//case NeShaderType::SHADER_TYPE_TESS_CONTROL:
+	//	shaderHandle = glCreateShader(GL_TESS_CONTROL_SHADER);
+	//	break;
+	//case NeShaderType::SHADER_TYPE_TESS_EVALUATION:
+	//	shaderHandle = glCreateShader(GL_TESS_EVALUATION_SHADER);
+	//	break;
+	//case NeShaderType::SHADER_TYPE_GEOMETRY:
+	//	shaderHandle = glCreateShader(GL_GEOMETRY_SHADER);
+	//	break;
+	//case NeShaderType::SHADER_TYPE_COMPUTE:
+	//	shaderHandle = glCreateShader(GL_COMPUTE_SHADER);
+	//	break;
+	}
+
+	return shaderHandle;
+}
+
 NeShader::NeShader(NeShaderType type, bool compiled)
 {
 	m_ShaderType = type;
-	m_ShaderId = (type == NeShaderType::SHADER_TYPE_FRAGMENT) ? glCreateShader(GL_FRAGMENT_SHADER) : glCreateShader(GL_VERTEX_SHADER);
-	m_Source = this->OnShaderCreated();	
+	m_ShaderId	 = CreateShader(type);
+	m_Source	 = this->OnShaderCreated();	
+	if (compiled) this->Compile();
+}
+
+NeShader::NeShader(NeShaderType type, std::function<const char*()> func, bool compiled)
+{
+	m_ShaderType = type;
+	m_ShaderId = CreateShader(type);
+	m_Source = func();
+	if (compiled) this->Compile();
 }
 
 NeShader::NeShader(NeShaderType type, const char* const source, bool compiled)
 {
 	m_ShaderType = type;
-	m_ShaderId = (type == NeShaderType::SHADER_TYPE_FRAGMENT) ? glCreateShader(GL_FRAGMENT_SHADER) : glCreateShader(GL_VERTEX_SHADER);
-	m_Compiled = false;
-	this->LoadSource(source);
+	m_ShaderId   = CreateShader(type);
+	m_Source	 = source;
+	if (compiled) this->Compile();
 }
 
 NeShader::NeShader(NeShaderType type, const string& source, bool compiled):
-	NeShader::NeShader(type, source.c_str(), compiled)
+	NeShader(type, source.c_str(), compiled)
 {
 
 }
@@ -29,29 +66,17 @@ NeShader::~NeShader()
 	if (m_ShaderId != 0) glDeleteShader(m_ShaderId);
 }
 
-GLenum /* error_no */ NeShader::LoadSource(const char* const source) noexcept
+void NeShader::LoadSource(const char* const source) noexcept
 {
 	m_Source = source;
-	if (m_ShaderId != 0 && source != nullptr)
-	{
-		glShaderSource(m_ShaderId, 1, &m_Source, NULL);
-	}
-
-	return GL_NO_ERROR;
-}
-
-GLenum /* error_no */ NeShader::LoadSource(GLsizei count, const char* const * src_array, const GLint *len_array)
-{
-	if (m_ShaderId != 0)
-	{
-		glShaderSource(m_ShaderId, count, src_array, len_array);
-	}
-
-	return GL_NO_ERROR;
 }
 
 GLenum NeShader::Compile(void) noexcept
 {
+
+	if (m_Source == nullptr) return GL_INVALID_VALUE;
+
+	glShaderSource(m_ShaderId, 1, &m_Source, NULL);
 	glCompileShader(m_ShaderId);
 
 	GLint compiled = 0;
@@ -84,6 +109,20 @@ GLenum NeShader::Compile(void) noexcept
 char const* NeShader::OnShaderCreated() noexcept
 {
 	return nullptr;
+}
+
+/*	NeVertexShader	*/
+NeVertexShader::NeVertexShader(bool compiled):
+	NeShader(NeShaderType::SHADER_TYPE_VERTEX)
+{
+
+}
+
+/*	NeFragmentShader	*/
+NeFragmentShader::NeFragmentShader(bool compiled) :
+	NeShader(NeShaderType::SHADER_TYPE_VERTEX)
+{
+
 }
 
 /*	ShaderFactory	*/

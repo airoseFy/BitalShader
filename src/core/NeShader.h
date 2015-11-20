@@ -3,9 +3,8 @@
 
 //	c/c++ std headers
 #include <exception>
-
-//	std headers	
 #include <string>
+#include <functional>
 
 //	local headers
 #include "base.h"
@@ -19,24 +18,26 @@ NE_NAMESPACE_BEGIN
 
 class NeShader;
 class NeShaderFactory;
-class NeFragment;
 
 enum class NeShaderType {
-	SHADER_TYPE_VERTEX   = 0x01,
-	SHADER_TYPE_FRAGMENT = 0x02
+	SHADER_TYPE_VERTEX			= 0x01,
+	SHADER_TYPE_FRAGMENT		= 0x02,
+	SHADER_TYPE_TESS_CONTROL	= 0x03,
+	SHADER_TYPE_TESS_EVALUATION = 0x04,
+	SHADER_TYPE_GEOMETRY		= 0x05,
+	SHADER_TYPE_COMPUTE			= 0x06,
 };
 
 class NeShader {
 public:
-	 explicit NeShader(NeShaderType type, bool compiled = false);
-	 NeShader(NeShaderType type, const char* const source, bool compiled = false);
-	 NeShader(NeShaderType type, const string& source, bool compiled = false);
-	~NeShader();
+	NeShader(NeShaderType type, bool compiled = false);
+	NeShader(NeShaderType type, std::function<const char*()> func, bool compiled = false);
+	NeShader(NeShaderType type, const char* const source, bool compiled = false);
+	NeShader(NeShaderType type, const string& source, bool compiled = false);
+	virtual ~NeShader();
 
 public:
-	GLenum /* error_no */ LoadSource(const char* const source) noexcept;
-
-	GLenum /* error_no */ LoadSource(GLsizei count, const char* const * src_array, const GLint *len_array);
+	void LoadSource(const char* const source) noexcept;
 
 	GLenum /* error_no */ Compile(void) noexcept;
 
@@ -52,9 +53,12 @@ public:
 	}
 
 protected:
+	/*----------------------------------------------------------------
+	+when shader create,return the shader source code string
+	+@param void \n
+	+@return	 \n OUT : source code string
+	-----------------------------------------------------------------*/
 	virtual char const* OnShaderCreated() noexcept;
-	//virtual void OnAttached(void) noexcept;
-	//virtual void OnDettached(void) noexcept;
 	friend class NeProgram;  //declare friend class Program
 
 private:
@@ -62,6 +66,18 @@ private:
 	GLuint	m_ShaderId;
 	bool	m_Compiled;
 	char const* m_Source;
+};
+
+class NeVertexShader : public NeShader{
+public:
+	explicit NeVertexShader(bool compiled = false);
+	virtual ~NeVertexShader() = default;
+};
+
+class NeFragmentShader : public NeShader {
+public:
+	explicit NeFragmentShader(bool compiled = false);
+	virtual ~NeFragmentShader() = default;
 };
 
 class NeShaderFactory {
