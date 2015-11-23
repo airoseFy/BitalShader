@@ -5,7 +5,6 @@
 #include <vector>
 
 //	gl headers	
-#include "platform.h"
 
 //	local headers
 #include "base.h"

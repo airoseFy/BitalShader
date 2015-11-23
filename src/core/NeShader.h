@@ -10,7 +10,6 @@
 #include "base.h"
 #include "log.h"
 #include "glError.h"
-#include "platform.h"
 
 using namespace std;
 
