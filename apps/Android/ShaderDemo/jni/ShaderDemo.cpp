@@ -3,8 +3,7 @@
 #include "MyRenderer.h"
 #include <android/native_window_jni.h>
 
-AN_Surface *pSurface;
-
+MyRenderer *pRenderer;
 extern "C" {
 
 /*
@@ -15,8 +14,7 @@ extern "C" {
 JNIEXPORT void JNICALL Java_com_bigital_shaderdemo_MainActivity_OnSurfaceCreated(JNIEnv *env, jclass, jobject jsurface)
 {
 	//info("ShaderJNI", "onSurfaceCreated");
-	pSurface = new AN_Surface(ANativeWindow_fromSurface(env, jsurface));
-	pSurface->SetRenderer(new MyRenderer());
+	pRenderer = new MyRenderer();
 }
   
 /*
@@ -28,7 +26,7 @@ JNIEXPORT void JNICALL Java_com_bigital_shaderdemo_MainActivity_OnSurfaceChanged
 {
 	//info("ShaderJNI", "onSurfaceChanged");
 	//if( pTask != nullptr ) pTask->Start(ANativeWindow_fromSurface(env, jsurface));	
-	pSurface->CreateSurface(width, height);
+	pRenderer->OnSurfaceCreated(width, height);
 }
  
 /*
@@ -36,10 +34,10 @@ JNIEXPORT void JNICALL Java_com_bigital_shaderdemo_MainActivity_OnSurfaceChanged
  * Method:    onSurfaceDestroy
  * Signature: (Landroid/view/SurfaceView;)V
  */
-JNIEXPORT void JNICALL Java_com_bigital_shaderdemo_MainActivity_OnDrawFrame(JNIEnv *env, jclass, jobject jsurface)
+JNIEXPORT void JNICALL Java_com_bigital_shaderdemo_MainActivity_OnDrawFrame(JNIEnv *env, jclass, jobject bitmap)
 {
 	//info("ShaderJNI", "OnDrawFrame");
-	pSurface->Render();
+	pRenderer->Render(env, bitmap);
 }
 
 }

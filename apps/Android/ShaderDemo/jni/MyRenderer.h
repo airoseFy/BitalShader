@@ -7,6 +7,8 @@
 #include <core/NeProgram.h>
 #include <core/NeShader.h>
 #include <GLES3/gl3.h>
+#include <jni.h>
+#include <android/bitmap.h>
 
 USING_NE_NAMESPACE;
 
@@ -15,12 +17,17 @@ public:
 	 MyRenderer() ;
 	~MyRenderer() ;
 
-protected:
-	virtual inline void OnSurfaceCreated(int width, int height);
+public:
+	void Render(JNIEnv *env, jobject bitmap) noexcept;
+
+public:
+	virtual void OnSurfaceCreated(int width, int height);
 	virtual void OnSurfaceDestroyed(void);
 	virtual void OnRender(int width, int height);
 
 private:
+	int	m_Width;
+	int m_Height;
 	NeProgram	*m_Program;
 	NeShader	*m_VertexShader;
 	NeShader	*m_FragmentShader;

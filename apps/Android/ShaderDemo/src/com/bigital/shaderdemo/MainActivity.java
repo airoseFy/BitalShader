@@ -7,11 +7,15 @@ import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.ActivityManager.RunningAppProcessInfo;
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.Drawable;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
 import android.view.Surface;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import android.view.TextureView;
 import android.view.View;
 import android.widget.Button;
 
@@ -27,15 +31,20 @@ public class MainActivity extends Activity {
 	
 	private Button button = null;
 	
+	private Bitmap bitmap = null;
+	
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 //        setContentView(R.layout.activity_main);
+        bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher);
         surfaceView = new GLSurfaceView(this);
         surfaceView.setEGLConfigChooser(8, 8, 8, 0, 24, 0);
         surfaceView.setEGLContextClientVersion(2);
         surfaceView.setRenderer(renderer);
         setContentView(surfaceView);    
+        TextureView textureView = null ;
+        textureView.getSurfaceTexture();
     }
     
     private GLSurfaceView.Renderer renderer = new GLSurfaceView.Renderer() {
@@ -55,7 +64,7 @@ public class MainActivity extends Activity {
 		@Override
 		public void onDrawFrame(GL10 arg0) {
 			// TODO Auto-generated method stub
-			OnDrawFrame(surfaceView.getHolder().getSurface());
+			OnDrawFrame(bitmap);
 		}
 	}; 
 	
@@ -74,9 +83,10 @@ public class MainActivity extends Activity {
 			}
 		}
 	}
+	
 	private static native void OnSurfaceCreated(Surface surface);
 	
 	private static native void OnSurfaceChanged(int width, int height);
 	
-	private static native void OnDrawFrame(Surface surface);
+	private static native void OnDrawFrame(Bitmap bitmap);
 }

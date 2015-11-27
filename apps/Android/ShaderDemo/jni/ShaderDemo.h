@@ -26,7 +26,7 @@ JNIEXPORT void JNICALL Java_com_bigital_shaderdemo_MainActivity_OnSurfaceChanged
 /*
  * Class:     com_bigital_shaderdemo_MainActivity
  * Method:    OnDrawFrame
- * Signature: (Landroid/view/Surface;)V
+ * Signature: (Landroid/graphics/Bitmap;)V
  */
 JNIEXPORT void JNICALL Java_com_bigital_shaderdemo_MainActivity_OnDrawFrame
   (JNIEnv *, jclass, jobject);

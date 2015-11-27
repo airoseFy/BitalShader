@@ -24,7 +24,7 @@ LOCAL_SRC_FILES  := \
 	ShaderDemo.cpp
 	
 LOCAL_LDLIBS     += -llog
-LOCAL_LDLIBS     += -landroid -lEGL -lGLESv2
+LOCAL_LDLIBS     += -landroid -lEGL -lGLESv2 -ljnigraphics
 
 LOCAL_CPPFLAGS 	+= -std=c++11
 LOCAL_CLANG = true

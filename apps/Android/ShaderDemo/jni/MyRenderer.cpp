@@ -26,25 +26,76 @@ MyRenderer::~MyRenderer()
 	}
 }
 
+void MyRenderer::Render(JNIEnv *env, jobject bitmap) noexcept
+{
+	int ret = 0;
+	AndroidBitmapInfo bitmapInfo;
+
+	if ((ret = AndroidBitmap_getInfo(env, bitmap, &bitmapInfo)) < 0)
+	{
+		info("MyRenderer", "AndroidBitmap_getInfo failed!");
+		return;
+	}
+	else {
+		info("MyRenderer", "bitmapInfo width = %d, height = %d", bitmapInfo.width, bitmapInfo.height);
+	}
+
+	GLuint textureId;
+	GLint location = glGetUniformLocation(m_Program->GetProgramId(), "s_texture");
+
+	glGenTextures(1, &textureId);
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, textureId);
+	glUniform1i(location, 0);
+
+	void *pixels = nullptr;
+	AndroidBitmap_lockPixels(env, bitmap, &pixels);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, bitmapInfo.width, bitmapInfo.height, 0, GL_RGBA, GL_UNSIGNED_BYTE, pixels);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+
+	this->OnRender(m_Width, m_Height);
+	AndroidBitmap_unlockPixels(env, bitmap);
+	//GLenum format = GL_RGB;
+	//if (bitmapInfo.format == ANDROID_BITMAP_FORMAT_RGBA_8888) {
+	//	info("MyRenderer", "bitmapInfo format = ANDROID_BITMAP_FORMAT_RGBA_8888");
+	//}
+	//else if (bitmapInfo.format ==  ANDROID_BITMAP_FORMAT_RGB_565) {
+	//	info("MyRenderer", "bitmapInfo format = ANDROID_BITMAP_FORMAT_RGB_565");
+	//}
+	//else if (bitmapInfo.format ==  ANDROID_BITMAP_FORMAT_RGBA_4444) {
+	//	info("MyRenderer", "bitmapInfo format = ANDROID_BITMAP_FORMAT_RGBA_4444");
+	//}
+	//else if (bitmapInfo.format ==  ANDROID_BITMAP_FORMAT_A_8) {
+	//	info("MyRenderer", "bitmapInfo format = ANDROID_BITMAP_FORMAT_A_8");
+	//}
+}
+
 void MyRenderer::OnSurfaceCreated(int width, int height)
 {
 	info("MyRenderer", "OnSurfaceCreated");
+	m_Width  = width;
+	m_Height = height;
 	char vShaderScript[] =
-	//	"#version 300 es							\n"
-		"attribute vec4 vPosition;	\n"
-		"void main()								\n"
-		"{											\n"
-		"gl_Position = vPosition;					\n"
-		"}											\n";
+		"attribute vec4 a_position;		\n"
+		"attribute vec2 a_texCoord;		\n"
+		"varying vec2 v_texCoord;		\n"
+		"void main()					\n"
+		"{								\n"
+		" gl_Position = a_position;		\n"
+		" v_texCoord = a_texCoord;		\n"
+		"}								\n";
 
 	char fShaderScript[] =
-	//	"#version 300 es						\n"
-		"precision mediump float;				\n"
-		//"out vec4 fragColor;					\n"
-		"void main()							\n"
-		"{										\n"
-		"gl_FragColor = vec4 (1.0, 0.0, 0.0, 1.0); \n"
-		"}										\n";
+		"precision mediump float;		\n"
+		"varying vec2 v_texCoord;		\n"
+		"uniform sampler2D s_texture;	\n"
+		"void main()					\n"
+		"{								\n"
+		" gl_FragColor = texture2D(s_texture, v_texCoord); \n"
+		"}								\n";
 
 	m_VertexShader->LoadSource(vShaderScript);
 	m_FragmentShader->LoadSource(fShaderScript);
@@ -55,7 +106,8 @@ void MyRenderer::OnSurfaceCreated(int width, int height)
 	m_Program->AttachShader(m_FragmentShader);
 	m_Program->Link();
 
-	glBindAttribLocation(m_Program->GetProgramId(), 0, "vPoistion");
+	glBindAttribLocation(m_Program->GetProgramId(), 0, "a_position");
+	glBindAttribLocation(m_Program->GetProgramId(), 1, "a_texCoord");
 	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 }
 
@@ -68,14 +120,25 @@ void MyRenderer::OnRender(int width, int height)
 {
 	//info("MyRenderer", "OnRender");
 	GLfloat vVertices[] = { 
-		 0.0f,  0.5f, 0.0f,
-		-0.5f, -0.5f, 0.0f,
-		 0.5f, -0.5f, 0.0f };
+		 0.0f,  0.0f, 0.0f,
+		 0.5f,  0.0f, 0.0f,
+		 0.5f,  0.5f, 0.0f,
+		 0.0f,  0.5f, 0.0f
+	};
+
+	GLfloat tCoords[] = {
+		0.0f, 0.0f,
+		1.0f, 0.0f,
+		1.0f, 1.0f,
+		0.0f, 1.0f
+	};
 
 	glViewport(0, 0, width, height);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	m_Program->Use();
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, vVertices);
+	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, tCoords);
 	glEnableVertexAttribArray(0);
-	glDrawArrays(GL_TRIANGLES, 0, 3);
+	glEnableVertexAttribArray(1);
+	glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
 }
