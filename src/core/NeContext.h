@@ -7,7 +7,8 @@
 //	c/c++ std headers
 
 //	local headers
-#include "base.h"
+#include <base.h>
+#include <NeProgram.h>
 
 NE_NAMESPACE_BEGIN
 
@@ -18,6 +19,12 @@ public:
 
 	static void MakeCurrentContext(IContext *context);
 	static IContext* GetCurrentContext(IContext)
+};
+
+class ContextWrapper{
+public:
+	virtual UseProgram(NeProgram *program) = 0;
+	virtual BindAttribLocation(NeProgram *program, int index, const char* attrib) = 0;
 };
 
 class Context {

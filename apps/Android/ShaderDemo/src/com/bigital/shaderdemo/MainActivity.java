@@ -3,6 +3,8 @@ package com.bigital.shaderdemo;
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
+import com.enature.AnSurfaceView;
+
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.ActivityManager.RunningAppProcessInfo;
@@ -23,9 +25,9 @@ import android.widget.Button;
 public class MainActivity extends Activity {
 	private final String TAG = MainActivity.class.toString();
 	
-	static{
-		System.loadLibrary("shader");
-	}
+//	static{
+//		System.loadLibrary("shader");
+//	}
 	
 	private GLSurfaceView surfaceView = null;
 	
@@ -33,18 +35,22 @@ public class MainActivity extends Activity {
 	
 	private Bitmap bitmap = null;
 	
+	private AnSurfaceView anSurfaceView = null;
+	
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 //        setContentView(R.layout.activity_main);
-        bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher);
-        surfaceView = new GLSurfaceView(this);
-        surfaceView.setEGLConfigChooser(8, 8, 8, 0, 24, 0);
-        surfaceView.setEGLContextClientVersion(2);
-        surfaceView.setRenderer(renderer);
-        setContentView(surfaceView);    
-        TextureView textureView = null ;
-        textureView.getSurfaceTexture();
+//        bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher);
+//        surfaceView = new GLSurfaceView(this);
+//        surfaceView.setEGLConfigChooser(8, 8, 8, 0, 24, 0);
+//        surfaceView.setEGLContextClientVersion(2);
+//        surfaceView.setRenderer(renderer);
+//        setContentView(surfaceView);    
+//        TextureView textureView = null ;
+//        textureView.getSurfaceTexture();
+        anSurfaceView = new AnSurfaceView(this);
+        setContentView(anSurfaceView);
     }
     
     private GLSurfaceView.Renderer renderer = new GLSurfaceView.Renderer() {

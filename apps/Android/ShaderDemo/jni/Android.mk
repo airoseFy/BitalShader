@@ -6,7 +6,7 @@ AN_PLATFORM_ROOT := $(NE_SRC_ROOT)/platform/android
 
 include $(CLEAR_VARS)
 
-LOCAL_MODULE	:= shader
+LOCAL_MODULE	:= NatureEngine
 
 LOCAL_C_INCLUDES := \
 	$(NE_SRC_ROOT) \
@@ -20,8 +20,8 @@ LOCAL_SRC_FILES  := \
 	$(NE_SRC_ROOT)/core/NeProgram.cpp \
 	$(NE_SRC_ROOT)/core/NeSurface.cpp \
 	$(AN_PLATFORM_ROOT)/AN_Surface.cpp \
-	MyRenderer.cpp \
-	ShaderDemo.cpp
+	NeAnSurfaceView.cpp \
+	AnSurfaceView.cpp
 	
 LOCAL_LDLIBS     += -llog
 LOCAL_LDLIBS     += -landroid -lEGL -lGLESv2 -ljnigraphics
